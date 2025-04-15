@@ -1,39 +1,72 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { Stack } from "expo-router";
+import { useState } from "react";
+import { AuthContext } from "@/context/AuthContext";
+import Colors from "@/data/Colors";
+import { StatusBar } from 'react-native';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+interface USER {
+  id: number,
+  name: string,
+  email: string,
+  image: string
+}
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
+  const [user, setUser] = useState<USER | undefined>(undefined)
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <AuthContext.Provider value={{ user, setUser }}>
+      <StatusBar backgroundColor={Colors.CHARCOAL} barStyle="light-content" />
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
+        <Stack.Screen name='landing'
+          options={{
+            headerShown: false
+          }}
+        />
+        <Stack.Screen name='(auth)/SignUp' options={{
+          headerTransparent: true,
+          headerTitle: '',
+          headerTintColor: Colors.PRIMARY
+        }} />
+        <Stack.Screen name='(auth)/SignIn' options={{
+          headerTransparent: true,
+          headerTitle: '',
+          headerTintColor: Colors.PRIMARY
+        }} />
+        <Stack.Screen name='(tabs)' options={{
+          headerShown: false
+        }} />
+        <Stack.Screen name='add-post/index' options={{
+          headerTitle: 'Add New Post',
+          headerStyle: {
+            backgroundColor: Colors.CHARCOAL
+          },
+          headerTitleStyle: {
+            color: Colors.PRIMARY
+          },
+          headerTintColor: Colors.PRIMARY
+        }} />
+        <Stack.Screen name='explore-clubs/index' options={{
+          headerTitle: 'Explore Club',
+          headerStyle: {
+            backgroundColor: Colors.CHARCOAL
+          },
+          headerTitleStyle: {
+            color: Colors.PRIMARY
+          },
+          headerTintColor: Colors.PRIMARY
+        }} />
+        <Stack.Screen name='add-event/index' options={{
+          headerTitle: 'Add New Event',
+          headerStyle: {
+            backgroundColor: Colors.CHARCOAL
+          },
+          headerTitleStyle: {
+            color: Colors.PRIMARY
+          },
+          headerTintColor: Colors.PRIMARY
+        }} />
       </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+    </AuthContext.Provider >
+  )
 }
